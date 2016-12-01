@@ -1,0 +1,7 @@
+wbi_api_oauth_server_homepage:
+    path:     /
+    defaults: { _controller: WbiApiOauthServerBundle:Default:index }
+
+wbi_api_oauth_server_access_token:
+    path:     /wbi/v2/token
+    defaults: { _controller: WbiApiOauthServerBundle:Default:getAccessToken }

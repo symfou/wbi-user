@@ -1,0 +1,57 @@
+security: 
+    encoders:
+        FOS\UserBundle\Model\UserInterface: sha512
+
+    role_hierarchy:
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_API, ROLE_ALLOWED_TO_SWITCH]
+
+    providers:
+        fos_userbundle:
+            id: fos_user.user_provider.username_email        # fos_user.user_provider.username_email does not seem to work (OAuth-spec related ("username + password") ?)
+    firewalls:
+        api:
+            pattern: ^/api                                # All URLs are protected
+            fos_oauth: true                            # OAuth2 protected resource
+            stateless: true                            # Do no set session cookies
+            anonymous: false                           # Anonymous access is not allowed
+
+        oauth_token:                                   # Everyone can access the access token URL.
+            pattern: ^/admin/oauth/v2/token
+            security: false
+
+        api_doc:
+            pattern:      ^/api/doc
+            security:     false
+        main:
+            pattern: ^/                              # All URLs are protected
+#            context: my_security_context
+            form_login:
+                provider: fos_userbundle
+                check_path: fos_user_security_check
+                login_path: fos_user_security_login
+                always_use_default_target_path: false
+                default_target_path:            wbi_admin_main_select_app   #client_ids
+                target_path_parameter:          _redirect_auth
+                use_referer:                    false
+#                use_forward: true
+            anonymous: true
+            logout:
+                path:           fos_user_security_logout
+
+#        oauth_authorize:
+#            pattern: ^/admin/oauth/v2/auth
+#            form_login:
+#                provider: fos_userbundle
+#                check_path: fos_user_security_check
+#                login_path: fos_user_security_login
+##                use_forward: true
+#            anonymous: true
+#            logout:
+#                path:           fos_user_security_logout
+
+    access_control:
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/, role: ROLE_ADMIN }
+        - { path: ^/api/, role: ROLE_API }

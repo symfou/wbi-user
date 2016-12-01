@@ -1,0 +1,4 @@
+services:
+#    wbi_admin_main.example:
+#        class: Wbi\Admin\MainBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]

@@ -1,0 +1,7 @@
+<h1>Select app</h1>
+
+<div>
+    {% for app in apps %}
+        <a href="{{ path('fos_oauth_server_authorize', {client_id: app.id~'_'~app.randomId, response_type: 'token', redirect_uri: app.redirectUris[0]}) }}">{{ app.name }}</a>
+    {% endfor %}
+</div>

@@ -1,0 +1,7 @@
+wbi_admin_main_homepage:
+    path:     /
+    defaults: { _controller: WbiAdminMainBundle:Default:index }
+
+wbi_admin_main_select_app:
+    path:     /select-app
+    defaults: { _controller: WbiAdminMainBundle:Default:selectApp }

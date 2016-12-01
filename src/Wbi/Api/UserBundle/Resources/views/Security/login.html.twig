@@ -1,0 +1,55 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+
+
+{% block fos_user_content %}
+
+    <h1>Sign in to Blur Admin</h1>
+    <a href="reg.html" class="auth-link">New to Blur Admin? Sign up!</a>
+
+{% if error %}
+    <div>{{ error|trans({}, 'FOSUserBundle') }}</div>
+{% endif %}
+
+
+
+<form class="form-horizontal" action="{{ path("fos_user_security_check") }}" method="post">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+
+
+    {#<input type="hidden" name="_redirect_auth" value="token" />#}
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="username">{{ 'security.login.username'|trans({}, 'FOSUserBundle') }}</label>
+        <div class="col-sm-10">
+            <input class="form-control" type="text" id="username" name="_username" value="{{ last_username }}" required="required" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="password">{{ 'security.login.password'|trans({}, 'FOSUserBundle') }}</label>
+        <div class="col-sm-10">
+            <input class="form-control" type="password" id="password" name="_password" required="required" />
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            {#<input type="checkbox" id="remember_me" name="_remember_me" value="on" />#}
+            {#<label for="remember_me">{{ 'security.login.remember_me'|trans({}, 'FOSUserBundle') }}</label>#}
+            <button class="btn btn-default btn-auth" type="submit" id="_submit" name="_submit">{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}</button>
+            <a href class="forgot-pass">Forgot password?</a>
+        </div>
+    </div>
+</form>
+
+    <div class="auth-sep"><span><span>or Sign in with one click</span></span></div>
+
+    <div class="al-share-auth">
+        <ul class="al-share clearfix">
+            <li><i class="socicon socicon-facebook" title="Share on Facebook"></i></li>
+            <li><i class="socicon socicon-twitter" title="Share on Twitter"></i></li>
+            <li><i class="socicon socicon-google" title="Share on Google Plus"></i></li>
+        </ul>
+    </div>
+{% endblock fos_user_content %}

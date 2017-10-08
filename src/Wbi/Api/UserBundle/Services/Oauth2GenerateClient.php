@@ -2,6 +2,7 @@
 
 namespace Wbi\Api\UserBundle\Services;
 
+use Wbi\Api\UserBundle\Entity\ClientHasUser;
 /**
  * Class Oauth2GenerateClient
  *
@@ -11,36 +12,56 @@ namespace Wbi\Api\UserBundle\Services;
 class Oauth2GenerateClient
 {
 
-    private $name, $redirectUri, $grantTypes, $fosOauthServer;
+    private $container;
 
     /**
      * Oauth2GenerateClient constructor.
-     * @param $redirectUri
-     * @param $name
-     * @param $grantTypes
-     * @param $client_manager
      */
-    public function __construct($redirectUri, $name, $grantTypes, $client_manager)
+    public function __construct($container)
     {
-        $this->redirectUri = $redirectUri;
-        $this->name = $name;
-        $this->grantTypes = $grantTypes;
-        $this->client_manager = $client_manager;
+        $this->container = $container;
     }
 
 
-    public function generateClient($clientId = null, $secret = null){
-        $client = $this->client_manager->createClient();
-//        $client->setName($this->name);
-        $client->setRedirectUris(array('URL' => $this->redirectUri));
-        $client->setAllowedGrantTypes($this->grantTypes);
-        if ($clientId){
-            $client->setRandomId($clientId);
+    public function generateClient($name, $redirectUri, $grantType){
+        $container = $this->container;
+
+//        $oauthServer = $container->get('fos_oauth_server.server');
+
+        $clientManager = $container->get('fos_oauth_server.client_manager.default');
+        $client = $clientManager->createClient();
+        $client->setName($name);
+        $client->setRedirectUris([$redirectUri]);
+        $client->setAllowedGrantTypes([$grantType]);
+        $clientManager->updateClient($client);
+
+
+        $users = $container->get('doctrine')->getRepository('WbiApiUserBundle:User')->findAll();
+
+        foreach ($users as $user){
+            $clientHasUser = new ClientHasUser();
+            $clientHasUser->setClient($client)
+                ->setUser($user)
+            ;
+            $container->get('doctrine')->getManager()->persist($clientHasUser);
         }
-        if ($secret){
-            $client->setSecret($secret);
-        }
-        $this->client_manager->updateClient($client);
-        echo "id_client: ".$client->getId();
+
+        $container->get('doctrine')->getManager()->flush();
+
+        return $client;
+
+        /*foreach ($customers as $customer) {
+            $queryData = [];
+            $queryData['client_id'] = $client->getPublicId();
+            $queryData['redirect_uri'] = $client->getRedirectUris()[0];
+            $queryData['response_type'] = 'code';
+            $authRequest = new Request($queryData);
+
+            $oauthServer->finishClientAuthorization(true, $customer, $authRequest, $grantType);
+
+            $output->writeln(sprintf("<info>Customer <comment>%s</comment> linked to client <comment>%s</comment></info>",
+                $customer->getId(),
+                $client->getName()));
+        }*/
     }
 }

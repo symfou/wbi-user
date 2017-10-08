@@ -1,0 +1,59 @@
+default:
+    formatters:
+        pretty:
+            verbose:  true
+            paths:    false
+            snippets: false
+    calls:
+        error_reporting: 16383 # E_ALL & ~E_USER_DREPRECATED
+    gherkin:
+        cache: app/cache/test/behat/behat_gherkin_cache
+    testers:
+        rerun_cache: app/cache/test/behat/behat_rerun_cache
+    suites:
+        OAuthServer:
+#            type: symfony_bundle
+#            bundle: 'WbiAdminMainBundle'
+#            paths:    [ %paths.base%/features/landingpage ]
+            contexts:
+                - FeatureContext: { container: "@service_container" }
+                - Knp\FriendlyContexts\Context\MinkContext
+                - Knp\FriendlyContexts\Context\TableContext
+                - Knp\FriendlyContexts\Context\EntityContext
+                - Knp\FriendlyContexts\Context\ApiContext
+#                - Behat\MinkExtension\Context\MinkContext
+#                - Sanpi\Behatch\Context\RestContext
+                - Sanpi\Behatch\Context\JsonContext
+#                - Behat\WebApiExtension\Context\WebApiContext
+
+    extensions:
+        Sanpi\Behatch\Extension: ~
+        Behat\MinkExtension:
+#            goutte: ~
+            symfony2: ~
+            sessions:
+                default:
+                    symfony2: ~
+                javascript:
+                    selenium2: ~
+            browser_name: firefox
+            base_url: http://majdi-user.dev/app_dev.php
+            show_auto:    true
+            show_cmd: firefox %s
+            show_tmp_dir: /home/wbi-user/
+            selenium2: ~
+#        Behat\WebApiExtension:
+#            base_url: http://majdi.com:8085/auth/app_test.php
+        Behat\Symfony2Extension:
+            kernel:
+                env: "test"
+                debug: "true"
+        Knp\FriendlyContexts\Extension:
+#            api:
+#                base_url: http://majdi.com:8085/auth/app_test.php
+            symfony_kernel:
+                bootstrap: app/autoload.php
+                path: app/AppKernel.php
+                class: AppKernel
+                env: test
+                debug: true

@@ -16,4 +16,4 @@ services:
 
     wbi_api_user.services.oauth2generate_client:
         class: %wbi_api_user.services.oauth2generate_client.class%
-        arguments: [%wbi_api_user.oauth2.client.redirecturi%, %wbi_api_user.oauth2.client.name%, %wbi_api_user.oauth2.client.grant_types%, @fos_oauth_server.client_manager.default]
+        arguments: [@service_container]
